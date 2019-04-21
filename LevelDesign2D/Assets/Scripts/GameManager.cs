@@ -13,10 +13,10 @@ public class GameManager : MonoBehaviour
         StartCoroutine(RestartGame());
     }
 
-    //Restarts Players health and position with a .5 second delay
+    //Restarts Players health and position with a .1 second delay
     IEnumerator RestartGame()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.1f);
         player.transform.position = SpawnPosition.position;
     }
 }

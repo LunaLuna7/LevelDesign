@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  hitAmount: 1
 --- !u!50 &2268252907443170965
 Rigidbody2D:
   serializedVersion: 4

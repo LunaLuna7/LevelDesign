@@ -1,14 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
 {
+
+    [Header("Player Stats")][Space]
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
     [SerializeField] private float m_AirJumps;                                  //How many Air jumps the player has.
     [SerializeField] private bool m_DynamicJump;
     [SerializeField] private float m_FallGravity = 7f;                          //Falling speed
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private bool m_AirControl = false;                         // Whether or not a player can steer while jumping;
+
+    [Header("Player Components")][Space]
     [SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
     [SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 

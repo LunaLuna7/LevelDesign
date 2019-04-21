@@ -5,6 +5,7 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public float speed;
+    public int hitAmount = 1;
     private Rigidbody2D rb;
 
 
@@ -19,6 +20,10 @@ public class Projectile : MonoBehaviour
     {
         if (collision.IsTouchingLayers(LayerMask.NameToLayer("Ground")))
             Destroy(gameObject);
-        
+        //else if (collision.IsTouchingLayers(LayerMask.NameToLayer("Ground")))
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.GetComponent<PlayerHealth>().DamagePlayer(hitAmount);
+        }
     }
 }
