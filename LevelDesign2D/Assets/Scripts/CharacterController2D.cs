@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class CharacterController2D : MonoBehaviour
@@ -10,6 +11,10 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private float m_AirJumps;                                  //How many Air jumps the player has.
     [SerializeField] private bool m_DynamicJump;
     [SerializeField] private float m_FallGravity = 7f;                          //Falling speed
+    [Range(0,10)]
+    [SerializeField] private int dashForce;                                     //dashPower
+    [SerializeField] private float m_dashCoolDown;                              //Dash coolDown before can use again
+    [SerializeField] private bool dashCoolDownDone;
     [Range(0, .3f)] [SerializeField] private float m_MovementSmoothing = .05f;  // How much to smooth out the movement
     [SerializeField] private bool m_AirControl = false;                         // Whether or not a player can steer while jumping;
 
@@ -20,21 +25,22 @@ public class CharacterController2D : MonoBehaviour
     const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
     private bool m_Grounded;            // Whether or not the player is grounded.
     const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
-    private Rigidbody2D m_Rigidbody2D;
     private bool m_FacingRight = true;  // For determining which way the player is currently facing.
-    private Vector3 m_Velocity = Vector3.zero;
     private float m_AirJumpsLeft;   //Keep track of airJumps
+    private Vector3 m_Velocity = Vector3.zero;
+    private Rigidbody2D m_Rigidbody2D;
+    private SpriteRenderer m_SpriteRenderer;
 
     [Header("Events")]
     [Space]
-
     public UnityEvent OnLandEvent;
 
     private void Awake()
     {
-        m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        dashCoolDownDone = true;
         m_AirJumpsLeft = m_AirJumps;
-
+        m_Rigidbody2D = GetComponent<Rigidbody2D>();
+        m_SpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (OnLandEvent == null)
             OnLandEvent = new UnityEvent();
     }
@@ -58,7 +64,6 @@ public class CharacterController2D : MonoBehaviour
             }
         }
     }
-
 
     public void Move(float move, bool jump)
     {
@@ -142,5 +147,34 @@ public class CharacterController2D : MonoBehaviour
     public void ResetJumps()
     {
         m_AirJumpsLeft = m_AirJumps;
+    }
+
+    public void Dash(bool upDash = false)
+    {
+        if(dashCoolDownDone)
+        {
+            dashCoolDownDone = false;
+            m_SpriteRenderer.color = new Color(5,0,0,1);
+            StartCoroutine("DashCoolDown");
+
+            if (upDash)
+            {
+                m_Rigidbody2D.velocity = Vector3.zero;
+                m_Rigidbody2D.AddForce(new Vector2(0, dashForce * 400));
+            }
+
+            else if (m_FacingRight)
+                m_Rigidbody2D.AddForce(new Vector2(dashForce * 1000,0));
+           
+            else
+                m_Rigidbody2D.AddForce(new Vector2(dashForce * -1000, 0));
+        }
+    }
+
+   IEnumerator DashCoolDown()
+    {
+        yield return new WaitForSeconds(m_dashCoolDown);
+        dashCoolDownDone = true;
+        m_SpriteRenderer.color = Color.white;
     }
 }

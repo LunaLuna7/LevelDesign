@@ -26,6 +26,17 @@ public class PlayerMovement : MonoBehaviour
         {
             jump = true;
         }
+
+        
+        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) &&
+            (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W))){
+            controller.Dash(true);
+        }
+
+        else if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        {
+            controller.Dash();
+        }
     }
 
     private void FixedUpdate()
